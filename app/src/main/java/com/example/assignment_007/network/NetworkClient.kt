@@ -1,12 +1,7 @@
 package com.example.assignment_007.network
 
-import com.example.assignment_007.model.User
-import com.google.gson.Gson
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 object NetworkClient {
 
@@ -19,8 +14,8 @@ object NetworkClient {
             .build()
     }
 
-    val api: LoginApi by lazy {
-        retrofit.create(LoginApi::class.java)
+    val api: UserApi by lazy {
+        retrofit.create(UserApi::class.java)
     }
 
 
