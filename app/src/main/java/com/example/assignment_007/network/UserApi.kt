@@ -10,22 +10,22 @@ import retrofit2.http.Query
 interface UserApi {
 
 
+    @FormUrlEncoded
+    @POST("login")
+    suspend fun userLogin(
+        @Field("email") email: String,
+        @Field("password") password: String,
 
-        @POST("login")
-        suspend fun userLogin(
-            @Query("email") email: String,
-            @Query("password") password: String,
-
-            ): Response<User>
-
-
-
-        @FormUrlEncoded
-        @POST("register")
-        suspend fun userRegister(
-            @Field("email") email: String,
-            @Field("password") password: String,
         ): Response<User>
 
 
-    }
+    @FormUrlEncoded
+    @POST("register")
+    suspend fun userRegister(
+        @Field("email") email: String,
+        @Field("password") password: String,
+
+    ): Response<User>
+
+
+}

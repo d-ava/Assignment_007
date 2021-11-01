@@ -9,22 +9,26 @@ import com.example.assignment_007.network.NetworkClient
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
-class LoginModel:ViewModel() {
-
-
-
-    private val _login = MutableLiveData<User>()
-    val login:LiveData<User> get()=_login
+class LoginModel : ViewModel() {
 
 
+    private val _userLogin = MutableLiveData<Response<User>>()
+    val userLogin: LiveData<Response<User>> get() = _userLogin
 
-    fun login(){
 
+    fun goUserLogin(email: String, password: String) {
+        viewModelScope.launch {
+            withContext(IO) {
+                val response = NetworkClient.api.userLogin(email=email,password= password)
+                val body = response.body()
+                if(response.isSuccessful && body != null){
+                    _userLogin.postValue(response)
+                }
 
+            }
+        }
     }
-
-
-
 
 }

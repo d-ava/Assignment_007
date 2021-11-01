@@ -30,6 +30,7 @@ abstract class BaseFragment<VB : ViewBinding, VM : ViewModel>(private val inflat
         init()
 
 
+
     }
 
     override fun onCreateView(
