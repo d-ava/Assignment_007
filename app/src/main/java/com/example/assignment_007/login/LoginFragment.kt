@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.datastore.preferences.core.edit
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import com.example.assignment_007.BaseFragment
 import com.example.assignment_007.R
@@ -18,6 +19,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.example.assignment_007.extensions.checkEmail
+import com.example.assignment_007.home.HomeFragment
 import com.example.assignment_007.tokenKey
 import com.example.assignment_007.tokenStore
 import kotlinx.coroutines.launch
@@ -66,35 +68,52 @@ class LoginFragment :
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
 
-            viewModel.goUserLogin(email=email,password= password)
+            val bundle = Bundle()
+            bundle.putString("emailLogin", email)
+
+
+            setFragmentResult(
+                "loginEmailRequestKey",
+                bundleOf("emailLogin" to email)
+            )
+
+
+
+            viewModel.goUserLogin(email = email, password = password)
             viewModel.userLogin.observe(viewLifecycleOwner, { response ->
                 val token = response.body()?.token ?: "empty token"
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    requireContext().tokenStore.edit { preferences ->
-                        preferences[tokenKey] = token
+                if (binding.checkBox.isChecked){
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        requireContext().tokenStore.edit { preferences ->
+                            preferences[tokenKey] = token
+                        }
                     }
                 }
 
-                //Toast.makeText(context, "received token is $token", Toast.LENGTH_SHORT).show()
+
+                if (!token.isNullOrEmpty()) {
+                    Toast.makeText(context, "received token is $token", Toast.LENGTH_SHORT).show()
+                    //val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment(binding.etEmail.text.toString())
+                    //findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+
+                    val ft: FragmentTransaction = activity?.supportFragmentManager!!.beginTransaction()
+                    ft.replace(R.id.fragment_container_view, HomeFragment())
+                    ft.commit()
+                }else{
+                    Toast.makeText(context, "unable to Log In, invalid Email or password", Toast.LENGTH_SHORT).show()
+                }
+
             })
 
-             val action =
+            /* val action =
                  LoginFragmentDirections.actionLoginFragmentToHomeFragment(binding.etEmail.text.toString())
-             findNavController().navigate(action)
+             findNavController().navigate(action)*/
 
 
         }
 
-
-
-
-
-
-
-
         binding.btnRegister.setOnClickListener {
-
 
 
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -127,8 +146,7 @@ class LoginFragment :
 
 
         email.addTextChangedListener(onTextChanged = { txt, _, _, _ ->
-            if (!txt.toString()
-                    .isNullOrEmpty() && !txt.isNullOrEmpty() && txt.toString()
+            if (txt.toString().isNotEmpty() && !txt.isNullOrEmpty() && txt.toString()
                     .checkEmail()
             ) {
                 binding.btnLogin.isEnabled = true
@@ -136,16 +154,14 @@ class LoginFragment :
 
         })
 
-        password.addTextChangedListener(onTextChanged = {txt, _, _, _ ->
-            if (!txt.toString()
-                    .isNullOrEmpty() && !txt.isNullOrEmpty() && txt.toString()
+        password.addTextChangedListener(onTextChanged = { txt, _, _, _ ->
+            if (txt.toString().isNotEmpty() && !txt.isNullOrEmpty() && txt.toString()
                     .checkEmail()
             ) {
                 binding.btnLogin.isEnabled = true
             }
 
         })
-
 
 
     }

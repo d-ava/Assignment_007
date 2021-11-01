@@ -32,25 +32,28 @@ class RegisterFragment :
 
             viewModel.goUserRegister(email = email, password = password, repeatPassword = password)
 
-            viewModel.userRegister.observe(viewLifecycleOwner, { response ->
+            /* viewModel.userRegister.observe(viewLifecycleOwner, { response ->
 
-                val token = response.body()?.token ?: "empty token"
+                 val token = response.body()?.token ?: "empty token"
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    requireContext().tokenStore.edit {
-                        it[tokenKey] = token
-                    }
-                }
-
-
-            })
+                 viewLifecycleOwner.lifecycleScope.launch {
+                     requireContext().tokenStore.edit {
+                         it[tokenKey] = token
+                     }
+                 }
 
 
-            val bundle = Bundle()
+             })*/
+
+
+             val bundle = Bundle()
             bundle.putString("email", email)
             bundle.putString("password", password)
 
-            setFragmentResult("registerRequestKey", bundleOf("email" to email, "password" to password))
+            setFragmentResult(
+                "registerRequestKey",
+                bundleOf("email" to email, "password" to password)
+            )
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
     }

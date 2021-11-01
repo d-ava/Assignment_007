@@ -18,6 +18,7 @@ class LoginModel : ViewModel() {
     val userLogin: LiveData<Response<User>> get() = _userLogin
 
 
+
     fun goUserLogin(email: String, password: String) {
         viewModelScope.launch {
             withContext(IO) {
